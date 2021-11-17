@@ -1,0 +1,22 @@
+{
+  "name": "router-api",
+  "version": "1.0.0",
+  "description": "API for fetching the questions and answers for given products",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Draco-Climbing/router-API.git"
+  },
+  "author": "Matthew Olsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Draco-Climbing/router-API/issues"
+  },
+  "homepage": "https://github.com/Draco-Climbing/router-API#readme",
+  "dependencies": {
+    "mongoose": "^6.0.13"
+  }
+}
