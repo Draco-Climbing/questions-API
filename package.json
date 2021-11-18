@@ -4,6 +4,7 @@
   "description": "API for fetching the questions and answers for given products",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server/index.js",
     "test": "test"
   },
   "repository": {
@@ -17,6 +18,8 @@
   },
   "homepage": "https://github.com/Draco-Climbing/router-API#readme",
   "dependencies": {
-    "mongoose": "^6.0.13"
+    "express": "^4.17.1",
+    "mongoose": "^6.0.13",
+    "nodemon": "^2.0.15"
   }
 }

@@ -13,36 +13,54 @@ db.once('open', function () {
 
 //SCHEMA for Database
 let questionsSchema = mongoose.Schema({
-  _.id: Number,
+  _id: Number,
   product_id: Number,
-  body: Text,
+  body: String,
   date_written: Date,
-  asker_name: Text,
-  asker_email: Text,
+  asker_name: String,
+  asker_email: String,
   reported: Boolean,
-  helpful:  Number
-  //insert schema
+  helpful: Number,
+  answers: {_id: {
+      _id: Number,
+      body: String,
+      date_written: Date,
+      answerer_name: String,
+      answerer_email: String,
+      reported: Boolean,
+      helpful: Number,
+      photos: [{
+        _id: Number,
+        url: String
+      }]
+  }}
 })
 
 let answersSchema = mongoose.Schema({
-  _.id: Number,
+  _id: Number,
   question_id: Number,
-  body: Text,
+  body: String,
   date_written: Date,
-  answerer_name: Text,
-  answerer_email: Text,
+  answerer_name: String,
+  answerer_email: String,
   reported: Boolean,
-  helpful:  Number
-  //insert schema
+  helpful: Number,
+  photos: [{
+    _id: Number,
+    url: String,
+  }]
 })
 
 let photosSchema = mongoose.Schema({
-  _.id: Number,
+  _id: Number,
   answer_id: Number,
-  url: Text
+  url: String
 })
 
-let QuestionRepo = mongoose.model('QuestionsRepo', questionsSchema);
-let AnswersRepo = mongoose.model('AnswersRepo', answersSchema);
-let PhotosRepo = mongoose.model('PhotosRepo', photosSchema);
+let question = mongoose.model('questions', questionsSchema);
+let answers = mongoose.model('answers', answersSchema);
+let photos = mongoose.model('photos', photosSchema);
 
+module.exports.photos = photos
+module.exports.answers = answers
+module.exports.db = db
