@@ -1,6 +1,6 @@
 const express = require('express');
 const { questions, answers, photos, db } = require('../database/');
-const Agg = require('./aggregates')
+const { answersWithPhotos, questionsWithAnswers } = require('./aggregates')
 
 let app = express();
 
@@ -16,9 +16,9 @@ app.get('/answers', (req, res) => {
   db
     .collection('answers')
     // .find({'_id': 13})
-    // .aggregate(Agg.answersWithPhotos)
-    .aggregate(pipeline)
-    .limit(10)
+    .aggregate(answersWithPhotos)
+    // .aggregate(pipeline)
+    // .limit(10)
     // .exec(
     .toArray((err, results) => {
       console.log('results', results)
@@ -31,12 +31,11 @@ app.get('/answers', (req, res) => {
     })
 })
 
-app.get('/questions', (req, res) => {
-  console.log('incomming question request')
+app.get('/qa/questions/', (req, res) => {
+  console.log('incomming question request', req.query)
   db
-    .collection('answers')
-    .find({}).limit(10)
-    // .exec(
+    .collection('questions')
+    .aggregate(questionsWithAnswers(parseInt(req.query.product_id)))
     .toArray((err, results) => {
       console.log('results', results)
       if (err) {

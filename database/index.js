@@ -57,10 +57,11 @@ let photosSchema = mongoose.Schema({
   url: String
 })
 
-let question = mongoose.model('questions', questionsSchema);
+let questions = mongoose.model('questions', questionsSchema);
 let answers = mongoose.model('answers', answersSchema);
 let photos = mongoose.model('photos', photosSchema);
 
 module.exports.photos = photos
 module.exports.answers = answers
+module.exports.questions = questions
 module.exports.db = db
