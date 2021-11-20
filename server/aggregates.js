@@ -1,13 +1,20 @@
-module.exports.answersWithPhotos = ([
-  { $match: { _id: { $lt: 15 } } },
-  { $sort: { _id: 1 } },
-  // { $limit: 15 },
-  {
-    $lookup: {
-      from: "photos", localField: "_id", foreignField: "answer_id", as: "photos"
+const { Model } = require("mongoose")
+
+module.exports.answersWithPhotos = (q_id) => {
+  // { $match: { _id: { $lt: 15 } } },
+  // { $match: { "question_id": { $eq: q_id } } },
+  return ([
+    { $match: { question_id: q_id } },
+    {
+      $lookup: {
+        from: "photos",
+        localField: "_id",
+        foreignField: "answer_id",
+        as: "photos"
+      }
     }
-  }
-])
+  ])
+}
   
 module.exports.questionsWithAnswers = (prod_id) => {
   return ([

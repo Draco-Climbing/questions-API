@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose; //new
+const { answersWithPhotos, questionsWithAnswers } = require('../server/aggregates')
 
 //Connect to Mongo database
 //connect to mongo on localhost
@@ -12,7 +14,8 @@ db.once('open', function () {
 })
 
 //SCHEMA for Database
-let questionsSchema = mongoose.Schema({
+let questionsSchema = new Schema({
+  // _id: { type: Schema.ObjectId, auto: true },
   _id: Number,
   product_id: Number,
   body: String,
@@ -21,23 +24,23 @@ let questionsSchema = mongoose.Schema({
   asker_email: String,
   reported: Boolean,
   helpful: Number,
-  answers: {_id: {
-      _id: Number,
-      body: String,
-      date_written: Date,
-      answerer_name: String,
-      answerer_email: String,
-      reported: Boolean,
-      helpful: Number,
-      photos: [{
-        _id: Number,
-        url: String
-      }]
-  }}
+  // answers: {_id: {
+  //     _id: Number,
+  //     body: String,
+  //     date_written: Date,
+  //     answerer_name: String,
+  //     answerer_email: String,
+  //     reported: Boolean,
+  //     helpful: Number,
+  //     photos: [{
+  //       _id: Number,
+  //       url: String
+  //     }]
+  // }}
 })
 
-let answersSchema = mongoose.Schema({
-  _id: Number,
+let answersSchema = new Schema({
+  // _id: Number,
   question_id: Number,
   body: String,
   date_written: Date,
@@ -45,14 +48,14 @@ let answersSchema = mongoose.Schema({
   answerer_email: String,
   reported: Boolean,
   helpful: Number,
-  photos: [{
-    _id: Number,
-    url: String,
-  }]
+  // photos: [{
+  //   _id: Number,
+  //   url: String,
+  // }]
 })
 
-let photosSchema = mongoose.Schema({
-  _id: Number,
+let photosSchema = new Schema({
+  // _id: Number,
   answer_id: Number,
   url: String
 })
@@ -61,7 +64,16 @@ let questions = mongoose.model('questions', questionsSchema);
 let answers = mongoose.model('answers', answersSchema);
 let photos = mongoose.model('photos', photosSchema);
 
+const questionsAgg = function(prod_id) {
+  questions
+    questions.aggregate(questionsWithAnswers(prod_id))
+    .toArray((err, res) => {
+    console.log('response', response)
+  })
+}
+
 module.exports.photos = photos
 module.exports.answers = answers
-module.exports.questions = questions
+module.exports.Questions = questions
+module.exports.questionsAgg = questionsAgg
 module.exports.db = db
