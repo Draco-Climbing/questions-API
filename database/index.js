@@ -40,7 +40,7 @@ let questionsSchema = new Schema({
 })
 
 let answersSchema = new Schema({
-  // _id: Number,
+  _id: Number,
   question_id: Number,
   body: String,
   date_written: Date,
@@ -55,7 +55,7 @@ let answersSchema = new Schema({
 })
 
 let photosSchema = new Schema({
-  // _id: Number,
+  _id: Number,
   answer_id: Number,
   url: String
 })
@@ -72,8 +72,8 @@ const questionsAgg = function(prod_id) {
   })
 }
 
-module.exports.photos = photos
-module.exports.answers = answers
+module.exports.Photos = photos
+module.exports.Answers = answers
 module.exports.Questions = questions
 module.exports.questionsAgg = questionsAgg
 module.exports.db = db

@@ -1,5 +1,5 @@
 const express = require('express');
-const { Questions, answers, photos, db, questionsAgg } = require('../database/');
+const { Questions, Answers, Photos, db, questionsAgg } = require('../database/');
 const { answersWithPhotos, questionsWithAnswers, } = require('./aggregates')
 
 let app = express();
@@ -45,7 +45,7 @@ app.get('/qa/questions/', (req, res) => {
             photo.date_written = Date(photo.date_written)
           }
         }
-        console.log('results', results)
+        // console.log('results', results)
         console.log('success')
         res.send(results)
       }
@@ -54,22 +54,11 @@ app.get('/qa/questions/', (req, res) => {
 
 app.post('/qa/questions/', (req, res) => {
   console.log('incomming post request', req.body)
-  let maxId = null;
-  // const maxId = db.collection('questions').find().sort({ _id: -1 }).limit(1)
-  // console.log('maxId', maxId)
-  db
-    .collection('questions')
-    .aggregate([{
-      $group: {
-      _id: '',
-      last: { $max: "$_id" }
-      }
-    }])
-    .toArray((err, res) => {
-      // console.log('response=====', res.last)
-      maxId = parseInt(res.last + 1);
-      const info = {
-        _id: maxId,
+  let info = {};
+    Questions.findOne().sort('-_id').exec((err, item) => {
+      console.log('max', item._id)
+      info = {
+        _id: item._id + 1,
         product_id: req.body.product_id,
         body: req.body.body,
         date: Date.now(),
@@ -78,15 +67,68 @@ app.post('/qa/questions/', (req, res) => {
         helpful: 0,
         reported: false,
       }
-      console.log(info);
+      const document = new Questions(info)
+      document.save((err, doc) => {
+        if (err) {
+          console.log('error', err);
+        } else {
+          console.log('success on saving to the DB:', doc)
+        }
+      })
+      res.send(`done`)
     })
-  // const document = new Questions(info)
-  // document.save((err, doc) => {
-  //   if (err) {
-  //     console.log('error', err);
-  //   } else {
-  //     console.log('success on saving to the DB:', doc)
-  //   }
-  // })
-  res.send(`done - maxId=${maxId}`)
 })
+
+app.post('/qa/questions/:question_id/answers', (req, res) => {
+  console.log('incomming post answer request', req.body, parseInt(req.params.question_id))
+  let info = {};
+    Answers.findOne().sort('-_id').exec((err, item) => {
+      console.log('maxAnswerId', item._id)
+      info = {
+        _id: item._id + 1,
+        question_id: parseInt(req.params.question_id),
+        body: req.body.body,
+        date: Date.now(),
+        answerer_name: req.body.name,
+        asker_email: req.body.email,
+        helpfulness: 0,
+        reported: false,
+      }
+      const document = new Answers(info)
+      document.save((err, doc) => {
+        if (err) {
+          console.log('error', err);
+        } else {
+          console.log('success on saving to the DB:', doc)
+        }
+      })
+      postPhotos(item._id + 1, req.body.photos)
+      res.send(`done`)
+    })
+})
+
+const postPhotos = (review_id, photos) => {
+    let info = {};
+    Photos.findOne().sort('-_id').exec((err, item) => {
+      console.log('maxPhotoId', item._id)
+      photoId = item._id
+      photos.map((item, index) => {
+        console.log('photoId: ', photoId + index);
+        info = {
+          _id: photoId + index + 1,
+          answer_id: review_id,
+          url: item
+        }
+        const document = new Photos(info)
+        document.save((err, doc) => {
+          if (err) {
+            console.log('error', err);
+          } else {
+            console.log('success on saving to the DB:', doc)
+          }
+        })
+      })
+      // res.send(`done`)
+    })
+}
+
