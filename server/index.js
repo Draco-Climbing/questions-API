@@ -128,7 +128,38 @@ const postPhotos = (review_id, photos) => {
           }
         })
       })
-      // res.send(`done`)
     })
 }
 
+app.put('/qa/questions/:question_id/helpful', (req, res) => {
+  console.log('PUT helpful', parseInt(req.params.question_id))
+  db
+    .collection('questions')
+    .updateOne(
+      { _id: parseInt(req.params.question_id) },
+      { $inc: {"helpful": 1 }}
+    )
+  res.send('done')
+})
+
+app.put('/qa/questions/:question_id/report', (req, res) => {
+  console.log('PUT question report', parseInt(req.params.question_id))
+  db
+    .collection('questions')
+    .updateOne(
+      { _id: parseInt(req.params.question_id) },
+      { $set: {"reported": true }}
+    )
+  res.send('done')
+})
+
+app.put('/qa/answers/:answer_id/report', (req, res) => {
+  console.log('PUT answer report', parseInt(req.params.answer_id))
+  db
+    .collection('answers')
+    .updateOne(
+      { _id: parseInt(req.params.answer_id) },
+      { $set: {"reported": true }}
+    )
+  res.send('done')
+})
