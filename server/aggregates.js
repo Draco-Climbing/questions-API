@@ -1,8 +1,6 @@
 const { Model } = require("mongoose")
 
 module.exports.answersWithPhotos = (q_id) => {
-  // { $match: { _id: { $lt: 15 } } },
-  // { $match: { "question_id": { $eq: q_id } } },
   return ([
     { $match: { question_id: q_id } },
     {
@@ -26,7 +24,6 @@ module.exports.questionsWithAnswers = (prod_id) => {
         from: "answers",
         localField: "_id",
         foreignField: "question_id",
-        // let: { answer_id: "_id" },
         pipeline: [{
           $lookup: {
             from: "photos",
@@ -38,22 +35,5 @@ module.exports.questionsWithAnswers = (prod_id) => {
         as: "answers"
       },
     },
-
-    // {arrayToObject: "$answers"}
-    // {
-    //   "$addFields": {
-    //     "answers2": {
-    //       "$arrayToObject": {
-    //         "$map": {
-    //           "input": '$answers',
-    //           "as": "out",
-    //           "in": {
-    //             "k": "$$out._id",
-    //             "v": "$$out"
-    //           }
-    //       }
-    //     }
-    //   }
-    // }}
   ])
 }

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index.js",
-    "test": "test"
+    "test": "mocha ./server/spec/serverSpec.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/Draco-Climbing/router-API#readme",
   "dependencies": {
+    "axios": "^0.24.0",
+    "chai": "^4.3.4",
     "express": "^4.17.1",
+    "mocha": "^9.1.3",
     "mongoose": "^6.0.13",
     "nodemon": "^2.0.15"
   }

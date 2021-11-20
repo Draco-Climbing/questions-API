@@ -4,14 +4,10 @@ const { answersWithPhotos, questionsWithAnswers, } = require('./aggregates')
 
 let app = express();
 
+app.use(express.json())
 app.listen(8000, function () {
   console.log('server running on port 8000');
 })
-
-app.use(express.json())
-
-// app.use(express.static(__dirname, ))
-const pipeline = [{$lookup:{ from: "photos", localField: "_id", foreignField: "answer_id", as: "photos"}}]
 
 app.get('/qa/questions/:question_id/answers', (req, res) => {
   console.log('incomming answer request', req.params, req.query)
@@ -31,7 +27,6 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 
 app.get('/qa/questions/', (req, res) => {
   console.log('incomming question request', req.query)
-  // questionsAgg(parseInt(req.query.product_id))
   db
     .collection('questions')
     .aggregate(questionsWithAnswers(parseInt(req.query.product_id)))
