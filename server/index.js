@@ -13,7 +13,8 @@ const convertAnswerArrayToObject = (results) => {
   results.map(question => {
     let result = {};
     question.answers.map(answer => {
-      result[answer._id] = answer;
+      //answer.answer_id because we changed the name from _id to id in the aggregation
+      result[answer.answer_id] = answer;
     })
     question.answers = result;
   })
@@ -57,12 +58,12 @@ app.get('/qa/questions/', (req, res) => {
       if (err) {
         PromiseRejectionEvent(console.log('error getting photos'))
       } else {
-        for (var doc of results) {
-          doc.date_written = Date(doc.date_written)
-          for (var photo of doc.answers) {
-            photo.date_written = Date(photo.date_written)
-          }
-        }
+        // for (var doc of results) {
+        //   doc.question_date = Date(doc.question_date)
+        //   for (var photo of doc.answers) {
+        //     photo.date_written = Date(photo.date_written)
+        //   }
+        // }
         // console.log('results', results)
         const finalResult = convertAnswerArrayToObject(results)
         res.send({

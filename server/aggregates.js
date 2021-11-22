@@ -16,8 +16,10 @@ module.exports.answersWithPhotos = (q_id, page = 1, count = 5) => {
     { $skip: (count * (page - 1)) },
     //limit the number of result to a user speified number 
     { $limit: count },
-    //remove the email field and version
-    {$unset: ['answerer_email', '__v']},
+    // make a new column 'id'
+    { $set: { id: "$_id" } },
+    // convert the date from milleseconds to ISO date
+    { $set: {date: {$toDate: "$date"}}},
     //lookup the photos and bring them into here
     {
       $lookup: {
@@ -26,7 +28,9 @@ module.exports.answersWithPhotos = (q_id, page = 1, count = 5) => {
         foreignField: "answer_id",
         as: "photos"
       }
-    }
+    },
+    //remove the email field and version and _id
+    { $unset: ['answerer_email', '__v', '_id'] },
   ])
 }
   
@@ -46,8 +50,10 @@ module.exports.questionsWithAnswers = (prod_id, page = 1, count = 5) => {
     { $skip: (count * (page - 1)) },
     //limit the number of result to a user speified number 
     { $limit: count },
-    //remove the email field and version
-    {$unset: ['asker_email', '__v']},
+    // make a new column 'question_id' which is the same as _id
+    { $set: { question_id: "$_id" } },
+    // convert the question date from milleseconds to ISO date
+    { $set: {question_date: {$toDate: "$question_date"}}},
     //lookup the answers and bring them into here
     {
       $lookup: {
@@ -60,11 +66,25 @@ module.exports.questionsWithAnswers = (prod_id, page = 1, count = 5) => {
             from: "photos",
             localField: "_id",
             foreignField: "answer_id",
+            pipeline: [
+              { $set: { id: "$_id" } },
+              {$unset: ['_id']}
+            ],
             as: "photos"
           }
-        }],
+        },
+          {
+            $set: {
+              date: { $toDate: "$date" },
+              answer_id: "$_id"
+            },
+          },
+          {$unset: ['_id'] }
+        ],
         as: "answers"
       },
     },
+    //remove the email field and version and _id
+    { $unset: ['asker_email', '__v', '_id'] },
   ])
 }
