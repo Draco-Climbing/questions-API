@@ -8,19 +8,39 @@ app.use(express.json())
 app.listen(8000, function () {
   console.log('server running on port 8000');
 })
+// this function will go the question results and convert the answers pulled to an objeect format
+const convertAnswerArrayToObject = (results) => {
+  results.map(question => {
+    let result = {};
+    question.answers.map(answer => {
+      result[answer._id] = answer;
+    })
+    question.answers = result;
+  })
+  return results
+}
 
 app.get('/qa/questions/:question_id/answers', (req, res) => {
   console.log('incomming answer request', req.params, req.query)
   db
     .collection('answers')
-    .aggregate(answersWithPhotos(parseInt(req.params.question_id)))
+    .aggregate(answersWithPhotos(
+      parseInt(req.params.question_id),
+      req.query.page ? parseInt(req.query.page) : 1,
+      req.query.count ? parseInt(req.query.count): 5))
     .toArray((err, results) => {
       // console.log('results', results)
       if (err) {
-        PromiseRejectionEvent(console.log('error getting photos'))
+        console.log('error getting photos', err)
+        res.status(500).send(`error on request:\n\n ${err}`)
       } else {
         console.log('success')
-        res.send(results)
+        const finalResult = {
+          "question": req.params.question_id,
+          "page": req.query.page,
+          "count": req.query.count,
+          "results": results}
+        res.send(finalResult)
       }
     })
 })
@@ -29,7 +49,10 @@ app.get('/qa/questions/', (req, res) => {
   console.log('incomming question request', req.query)
   db
     .collection('questions')
-    .aggregate(questionsWithAnswers(parseInt(req.query.product_id)))
+    .aggregate(questionsWithAnswers(
+      parseInt(req.query.product_id),
+      req.query.page ? parseInt(req.query.page) : 1,
+      req.query.count ? parseInt(req.query.count): 5))
     .toArray((err, results) => {
       if (err) {
         PromiseRejectionEvent(console.log('error getting photos'))
@@ -41,8 +64,11 @@ app.get('/qa/questions/', (req, res) => {
           }
         }
         // console.log('results', results)
-        console.log('success')
-        res.send(results)
+        const finalResult = convertAnswerArrayToObject(results)
+        res.send({
+          "product_id": req.query.product_id,
+          "results": finalResult
+        })
       }
     })
 })
@@ -51,16 +77,16 @@ app.post('/qa/questions/', (req, res) => {
   console.log('incomming post request', req.body)
   let info = {};
     Questions.findOne().sort('-_id').exec((err, item) => {
-      console.log('max', item._id)
+      // console.log('max', item._id)
       info = {
         _id: item._id + 1,
         product_id: req.body.product_id,
-        body: req.body.body,
-        date: Date.now(),
+        question_body: req.body.body,
+        question_date: Date.now(),
         asker_name: req.body.name,
-        asker_email: req.body.email,
-        helpful: 0,
+        question_helpfulness: 0,
         reported: false,
+        asker_email: req.body.email,
       }
       const document = new Questions(info)
       document.save((err, doc) => {
@@ -70,7 +96,7 @@ app.post('/qa/questions/', (req, res) => {
           console.log('success on saving to the DB:', doc)
         }
       })
-      res.send(`done`)
+      res.send(`${item._id}`)
     })
 })
 

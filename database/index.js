@@ -13,45 +13,28 @@ db.once('open', function () {
   console.log('MongoDB connection successful');
 })
 
-//SCHEMA for Database
+//SCHEMA for Mongo Database
 let questionsSchema = new Schema({
-  // _id: { type: Schema.ObjectId, auto: true },
+  //if not given the id, Mongo will auto do this and this line is not necessary
   _id: Number,
   product_id: Number,
-  body: String,
-  date_written: Date,
+  question_body: String,
+  question_date: Date,
   asker_name: String,
-  asker_email: String,
+  question_helpfulness: Number,
   reported: Boolean,
-  helpful: Number,
-  // answers: {_id: {
-  //     _id: Number,
-  //     body: String,
-  //     date_written: Date,
-  //     answerer_name: String,
-  //     answerer_email: String,
-  //     reported: Boolean,
-  //     helpful: Number,
-  //     photos: [{
-  //       _id: Number,
-  //       url: String
-  //     }]
-  // }}
+  asker_email: String,
 })
 
 let answersSchema = new Schema({
   _id: Number,
   question_id: Number,
   body: String,
-  date_written: Date,
+  date: Date,
   answerer_name: String,
   answerer_email: String,
   reported: Boolean,
-  helpful: Number,
-  // photos: [{
-  //   _id: Number,
-  //   url: String,
-  // }]
+  helpfulness: Number,
 })
 
 let photosSchema = new Schema({
