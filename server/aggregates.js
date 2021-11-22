@@ -26,6 +26,10 @@ module.exports.answersWithPhotos = (q_id, page = 1, count = 5) => {
         from: "photos",
         localField: "_id",
         foreignField: "answer_id",
+        pipeline: [
+          { $set: { id: "$_id" } },
+          {$unset: ['_id']}
+        ],
         as: "photos"
       }
     },
