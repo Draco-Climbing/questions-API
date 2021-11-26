@@ -22,7 +22,7 @@ const convertAnswerArrayToObject = (results) => {
 }
 
 app.get('/qa/questions/:question_id/answers', (req, res) => {
-  console.log('incomming answer request', req.params, req.query)
+  // console.log('incomming answer request', req.params, req.query)
   db
     .collection('answers')
     .aggregate(answersWithPhotos(
@@ -47,7 +47,7 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 })
 
 app.get('/qa/questions/', (req, res) => {
-  console.log('incomming question request', req.query)
+  // console.log('incomming question request', req.query)
   db
     .collection('questions')
     .aggregate(questionsWithAnswers(
@@ -56,7 +56,8 @@ app.get('/qa/questions/', (req, res) => {
       req.query.count ? parseInt(req.query.count): 5))
     .toArray((err, results) => {
       if (err) {
-        PromiseRejectionEvent(console.log('error getting photos'))
+        // reject(console.log('error getting photos'))
+        throw err
       } else {
         // for (var doc of results) {
         //   doc.question_date = Date(doc.question_date)
