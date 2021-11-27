@@ -37,6 +37,26 @@ module.exports.answersWithPhotos = (q_id, page = 1, count = 5) => {
     { $unset: ['answerer_email', '__v', '_id'] },
   ])
 }
+
+module.exports.resultDataAgg = (prod_id, page = 1, count = 5) => {
+  return ([
+    {
+      $match: {
+        $and: [
+          // { reported: { $in: [false, 0] } },  //dropping the $in saved allowed for more than 1.5 requests to come in
+          { reported: false },
+          { product_id: prod_id }
+        ]
+      },
+    },
+    //sort by the most recently written
+    // { $sort: { _id: -1 } },  //this was done when we made the collection
+    //create 'pages' by skipping over a certain amount of results
+    { $skip: (count * (page - 1)) },
+    //limit the number of result to a user speified number 
+    { $limit: count },
+  ])
+}
   
 module.exports.questionsWithAnswers = (prod_id, page = 1, count = 5) => {
   return ([

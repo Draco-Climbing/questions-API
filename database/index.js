@@ -43,9 +43,37 @@ let photosSchema = new Schema({
   url: String
 })
 
+let resultSchema = new Schema({
+  //if not given the id, Mongo will auto do this and this line is not necessary
+  _id: Number,
+  product_id: Number,
+  question_body: String,
+  question_date: Date,
+  asker_name: String,
+  question_helpfulness: Number,
+  reported: Boolean,
+  asker_email: String,
+  answers: [{
+    _id: Number,
+    question_id: Number,
+    body: String,
+    date: Date,
+    answerer_name: String,
+    answerer_email: String,
+    reported: Boolean,
+    helpfulness: Number,
+    photos: [{
+      _id: Number,
+      answer_id: Number,
+      url: String
+    }]
+  }]
+})
+
 let questions = mongoose.model('questions', questionsSchema);
 let answers = mongoose.model('answers', answersSchema);
 let photos = mongoose.model('photos', photosSchema);
+let resultdata = mongoose.model('resultdata', resultSchema);
 
 const questionsAgg = function(prod_id) {
   questions
@@ -55,6 +83,7 @@ const questionsAgg = function(prod_id) {
   })
 }
 
+module.exports.resultdata = resultdata
 module.exports.Photos = photos
 module.exports.Answers = answers
 module.exports.Questions = questions

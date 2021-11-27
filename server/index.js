@@ -1,6 +1,6 @@
 const express = require('express');
-const { Questions, Answers, Photos, db, questionsAgg } = require('../database/');
-const { answersWithPhotos, questionsWithAnswers, } = require('./aggregates')
+const { Questions, Answers, Photos, db, resultdata } = require('../database/');
+const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
 
 let app = express();
 
@@ -47,6 +47,30 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
 })
 
 app.get('/qa/questions/', (req, res) => {
+  // console.log(req)
+  db
+    .collection('resultData')
+    .aggregate(resultDataAgg(
+      parseInt(req.query.product_id),
+      req.query.page ? parseInt(req.query.page) : 1,
+      req.query.count ? parseInt(req.query.count): 5))
+    .toArray((err,results) => {
+      // console.log(err, results)
+      if (err) {
+        console.log(err)
+      // throw err;
+    } else {
+      const finalResult = convertAnswerArrayToObject(results)
+      res.send({
+          "product_id": req.query.product_id,
+          "results": finalResult,
+          // "results": results 
+        })
+    }
+  })
+})
+
+app.get('/qa/z/', (req, res) => {
   // console.log('incomming question request', req.query)
   db
     .collection('questions')
