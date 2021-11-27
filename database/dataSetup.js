@@ -1,4 +1,4 @@
-// const { db } = require(".");
+// in mongosh run with: load(/Users/mbolsen/code/sei/sdc/questions-API/database/dataSetup.js)
 
 db.questions.aggregate([
   // find everything that is not reported and has the correct question id
