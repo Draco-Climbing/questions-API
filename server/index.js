@@ -1,6 +1,7 @@
 const express = require('express');
 const { Questions, Answers, Photos, db, resultdata } = require('../database/');
 const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
+const controller = require('./controllers');
 
 let app = express();
 
@@ -8,96 +9,100 @@ app.use(express.json())
 app.listen(8000, function () {
   console.log('server running on port 8000');
 })
-// this function will go the question results and convert the answers pulled to an objeect format
-const convertAnswerArrayToObject = (results) => {
-  results.map(question => {
-    let result = {};
-    question.answers.map(answer => {
-      //answer.answer_id because we changed the name from _id to id in the aggregation
-      result[answer.answer_id] = answer;
-    })
-    question.answers = result;
-  })
-  return results
-}
+// // this function will go the question results and convert the answers pulled to an objeect format
+// const convertAnswerArrayToObject = (results) => {
+//   results.map(question => {
+//     let result = {};
+//     question.answers.map(answer => {
+//       //answer.answer_id because we changed the name from _id to id in the aggregation
+//       result[answer.answer_id] = answer;
+//     })
+//     question.answers = result;
+//   })
+//   return results
+// }
 
-app.get('/qa/questions/:question_id/answers', (req, res) => {
-  // console.log('incomming answer request', req.params, req.query)
-  db
-    .collection('answers')
-    .aggregate(answersWithPhotos(
-      parseInt(req.params.question_id),
-      req.query.page ? parseInt(req.query.page) : 1,
-      req.query.count ? parseInt(req.query.count): 5))
-    .toArray((err, results) => {
-      // console.log('results', results)
-      if (err) {
-        console.log('error getting photos', err)
-        res.status(500).send(`error on request:\n\n ${err}`)
-      } else {
-        console.log('success')
-        const finalResult = {
-          "question": req.params.question_id,
-          "page": req.query.page,
-          "count": req.query.count,
-          "results": results}
-        res.send(finalResult)
-      }
-    })
-})
+app.get('/qa/questions/', controller.getControllers.getQuestions)
+app.get('/qa/z/', controller.getControllers.getQuestionsZ)
+app.get('/qa/questions/:question_id/answers', controller.getControllers.getAnswers)
 
-app.get('/qa/questions/', (req, res) => {
-  // console.log(req)
-  db
-    .collection('resultData')
-    .aggregate(resultDataAgg(
-      parseInt(req.query.product_id),
-      req.query.page ? parseInt(req.query.page) : 1,
-      req.query.count ? parseInt(req.query.count): 5))
-    .toArray((err,results) => {
-      // console.log(err, results)
-      if (err) {
-        console.log(err)
-      // throw err;
-    } else {
-      const finalResult = convertAnswerArrayToObject(results)
-      res.send({
-          "product_id": req.query.product_id,
-          "results": finalResult,
-          // "results": results 
-        })
-    }
-  })
-})
+app.put('/qa/questions/:question_id/helpful', controller.putControllers.helpfulAnswer)
+app.put('/qa/questions/:question_id/report', controller.putControllers.reportQuestion)
+app.put('/qa/answers/:answer_id/report', controller.putControllers.reportAnswer)
+  
+// app.get('/qa/questions/', (req, res) => {
+//   db
+//     .collection('resultData')
+//     .aggregate(resultDataAgg(
+//       parseInt(req.query.product_id),
+//       req.query.page ? parseInt(req.query.page) : 1,
+//       req.query.count ? parseInt(req.query.count): 5))
+//     .toArray((err,results) => {
+//       if (err) {
+//         console.log(err)
+//     } else {
+//       const finalResult = convertAnswerArrayToObject(results)
+//       res.send({
+//           "product_id": req.query.product_id,
+//           "results": finalResult,
+//         })
+//     }
+//   })
+// })
 
-app.get('/qa/z/', (req, res) => {
-  // console.log('incomming question request', req.query)
-  db
-    .collection('questions')
-    .aggregate(questionsWithAnswers(
-      parseInt(req.query.product_id),
-      req.query.page ? parseInt(req.query.page) : 1,
-      req.query.count ? parseInt(req.query.count): 5))
-    .toArray((err, results) => {
-      if (err) {
-        // reject(console.log('error getting photos'))
-        throw err
-      } else {
-        // for (var doc of results) {
-        //   doc.question_date = Date(doc.question_date)
-        //   for (var photo of doc.answers) {
-        //     photo.date_written = Date(photo.date_written)
-        //   }
-        // }
-        // console.log('results', results)
-        const finalResult = convertAnswerArrayToObject(results)
-        res.send({
-          "product_id": req.query.product_id,
-          "results": finalResult
-        })
-      }
-    })
-})
+// app.get('/qa/z/', (req, res) => {
+//   // console.log('incomming question request', req.query)
+//   db
+//     .collection('questions')
+//     .aggregate(questionsWithAnswers(
+//       parseInt(req.query.product_id),
+//       req.query.page ? parseInt(req.query.page) : 1,
+//       req.query.count ? parseInt(req.query.count): 5))
+//     .toArray((err, results) => {
+//       if (err) {
+//         // reject(console.log('error getting photos'))
+//         throw err
+//       } else {
+//         // for (var doc of results) {
+//         //   doc.question_date = Date(doc.question_date)
+//         //   for (var photo of doc.answers) {
+//         //     photo.date_written = Date(photo.date_written)
+//         //   }
+//         // }
+//         // console.log('results', results)
+//         const finalResult = convertAnswerArrayToObject(results)
+//         res.send({
+//           "product_id": req.query.product_id,
+//           "results": finalResult
+//         })
+//       }
+//     })
+// })
+
+// app.get('/qa/questions/:question_id/answers', (req, res) => {
+//   // console.log('incomming answer request', req.params, req.query)
+//   db
+//     .collection('answers')
+//     .aggregate(answersWithPhotos(
+//       parseInt(req.params.question_id),
+//       req.query.page ? parseInt(req.query.page) : 1,
+//       req.query.count ? parseInt(req.query.count): 5))
+//     .toArray((err, results) => {
+//       // console.log('results', results)
+//       if (err) {
+//         console.log('error getting photos', err)
+//         res.status(500).send(`error on request:\n\n ${err}`)
+//       } else {
+//         console.log('success')
+//         const finalResult = {
+//           "question": req.params.question_id,
+//           "page": req.query.page,
+//           "count": req.query.count,
+//           "results": results}
+//         res.send(finalResult)
+//       }
+//     })
+// })
 
 app.post('/qa/questions/', (req, res) => {
   console.log('incomming post request', req.body)
@@ -178,35 +183,35 @@ const postPhotos = (review_id, photos) => {
     })
 }
 
-app.put('/qa/questions/:question_id/helpful', (req, res) => {
-  console.log('PUT helpful', parseInt(req.params.question_id))
-  db
-    .collection('questions')
-    .updateOne(
-      { _id: parseInt(req.params.question_id) },
-      { $inc: {"helpful": 1 }}
-    )
-  res.send('done')
-})
+// app.put('/qa/questions/:question_id/helpful', (req, res) => {
+//   console.log('PUT helpful', parseInt(req.params.question_id))
+//   db
+//     .collection('questions')
+//     .updateOne(
+//       { _id: parseInt(req.params.question_id) },
+//       { $inc: {"helpful": 1 }}
+//     )
+//   res.send('done')
+// })
 
-app.put('/qa/questions/:question_id/report', (req, res) => {
-  console.log('PUT question report', parseInt(req.params.question_id))
-  db
-    .collection('questions')
-    .updateOne(
-      { _id: parseInt(req.params.question_id) },
-      { $set: {"reported": true }}
-    )
-  res.send('done')
-})
+// app.put('/qa/questions/:question_id/report', (req, res) => {
+//   console.log('PUT question report', parseInt(req.params.question_id))
+//   db
+//     .collection('questions')
+//     .updateOne(
+//       { _id: parseInt(req.params.question_id) },
+//       { $set: {"reported": true }}
+//     )
+//   res.send('done')
+// })
 
-app.put('/qa/answers/:answer_id/report', (req, res) => {
-  console.log('PUT answer report', parseInt(req.params.answer_id))
-  db
-    .collection('answers')
-    .updateOne(
-      { _id: parseInt(req.params.answer_id) },
-      { $set: {"reported": true }}
-    )
-  res.send('done')
-})
+// app.put('/qa/answers/:answer_id/report', (req, res) => {
+//   console.log('PUT answer report', parseInt(req.params.answer_id))
+//   db
+//     .collection('answers')
+//     .updateOne(
+//       { _id: parseInt(req.params.answer_id) },
+//       { $set: {"reported": true }}
+//     )
+//   res.send('done')
+// })

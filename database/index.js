@@ -4,7 +4,8 @@ const { answersWithPhotos, questionsWithAnswers } = require('../server/aggregate
 
 //Connect to Mongo database
 //connect to mongo on localhost
-mongoose.connect('mongodb://localhost/sdc-questions', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost/sdc-questions', { family: 4 })
+// { useNewUrlParser: true, useUnifiedTopology: true }
 //connect to mongo on heroku (not set up, need to set up for aws)
 // mongoose.connect(process.env.MONGODB_URI);
 var db = mongoose.connection
