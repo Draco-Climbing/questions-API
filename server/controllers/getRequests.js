@@ -1,5 +1,5 @@
 const { db } = require('../../database/');
-const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('../aggregates')
+const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
 
 // this function will go the question results and convert the answers pulled to an objeect format
 const convertAnswerArrayToObject = (results) => {
