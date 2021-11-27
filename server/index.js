@@ -1,6 +1,6 @@
 const express = require('express');
-const { Questions, Answers, Photos, db, resultdata } = require('../database/');
-const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
+// const { Questions, Answers, Photos, db, resultdata } = require('../database/');
+// const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
 const controller = require('./controllers');
 
 let app = express();

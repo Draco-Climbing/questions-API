@@ -43,7 +43,7 @@ describe('Server Testing', () => {
       const response = await axios.get(url)
 
       //need to change to an object
-      expect(response.data).to.be.an('array');
+      expect(response.data).to.be.an('object');
     });
   })
 

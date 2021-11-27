@@ -1,4 +1,4 @@
-const { Questions, Answers, Photos, db, resultdata } = require('../database/');
+const { Questions, Answers, Photos } = require('../../database/');
 
 const postPhotos = (review_id, photos) => {
     let info = {};
