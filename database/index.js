@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose; //new
-const { answersWithPhotos, questionsWithAnswers } = require('../server/aggregates')
+const { answersWithPhotos, questionsWithAnswers } = require('../server/controllers/aggregates')
 
 //Connect to Mongo database
 //connect to mongo on localhost
@@ -44,7 +44,7 @@ let photosSchema = new Schema({
   url: String
 })
 
-let resultSchema = new Schema({
+let resultDataSchema = new Schema({
   //if not given the id, Mongo will auto do this and this line is not necessary
   _id: Number,
   product_id: Number,
@@ -74,7 +74,7 @@ let resultSchema = new Schema({
 let questions = mongoose.model('questions', questionsSchema);
 let answers = mongoose.model('answers', answersSchema);
 let photos = mongoose.model('photos', photosSchema);
-let resultdata = mongoose.model('resultdata', resultSchema);
+let resultData = mongoose.model('resultData', resultDataSchema);
 
 const questionsAgg = function(prod_id) {
   questions
@@ -84,7 +84,7 @@ const questionsAgg = function(prod_id) {
   })
 }
 
-module.exports.resultdata = resultdata
+module.exports.ResultData = resultData
 module.exports.Photos = photos
 module.exports.Answers = answers
 module.exports.Questions = questions
