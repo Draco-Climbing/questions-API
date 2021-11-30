@@ -74,7 +74,7 @@ module.exports = {
   // console.log('incomming post answer request', req.body, parseInt(req.params.question_id))
   let info = {};
     Answers.findOne().sort('-_id').exec((err, item) => {
-      console.log('maxAnswerId', item._id)
+      // console.log('maxAnswerId', item._id)
       info = {
         _id: item._id + 1,
         question_id: parseInt(req.params.question_id),

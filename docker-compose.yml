@@ -1,0 +1,21 @@
+services:
+  node:
+    image: sdc-node
+    container_name: sdc-node
+    depends_on:
+      - mongo
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: node.Dockerfile
+  mongo:
+    image: sdc-mongo
+    container_name: sdc-mongo
+    ports: 
+      - 3001:27017
+    environment:
+      MONGO_INITDB_DATABASE: sdc-questions
+    build: 
+      context: .
+      dockerfile: mongo.Dockerfile

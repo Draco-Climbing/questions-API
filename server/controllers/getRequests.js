@@ -1,5 +1,6 @@
 const { db } = require('../../database/');
 const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
+const mongoose = require('mongoose');
 
 // this function will go the question results and convert the answers pulled to an objeect format
 const convertAnswerArrayToObject = (results) => {
@@ -64,29 +65,29 @@ module.exports = {
     })
   },
   
-  getAnswers: function(req, res){
+  getAnswers: async function(req, res){
   // console.log('incomming answer request', req.params, req.query)
-  db
-    .collection('answers')
-    .aggregate(answersWithPhotos(
-      parseInt(req.params.question_id),
-      req.query.page ? parseInt(req.query.page) : 1,
-      req.query.count ? parseInt(req.query.count): 5))
-    .toArray((err, results) => {
-      // console.log('results', results)
-      if (err) {
-        console.log('error getting photos', err)
-        res.status(500).send(`error on request:\n\n ${err}`)
-      } else {
-        console.log('success')
-        const finalResult = {
-          "question": req.params.question_id,
-          "page": req.query.page,
-          "count": req.query.count,
-          "results": results}
-        res.send(finalResult)
-      }
-    })
+  // await mongoose.connect('mongodb://127.0.0.2:27017/sdc-questions')
+    
+  mongoose.connection.collection('answers').aggregate(answersWithPhotos(
+    parseInt(req.params.question_id),
+    req.query.page ? parseInt(req.query.page) : 1,
+    req.query.count ? parseInt(req.query.count): 5))
+  .toArray((err, results) => {
+    // console.log('results', results)
+    if (err) {
+      console.log('error getting photos', err)
+      res.status(500).send(`error on request:\n\n ${err}`)
+    } else {
+      console.log('success')
+      const finalResult = {
+        "question": req.params.question_id,
+        "page": req.query.page,
+        "count": req.query.count,
+        "results": results}
+      res.send(finalResult)
+    }
+  })
 }
 
 }

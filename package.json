@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server/index.js",
-    "test": "mocha ./server/spec/serverSpec.js"
+    "test": "mocha ./server/spec/serverSpec.js",
+    "loadAnswers": "mongoimport -d sdc-questions -c answers --headerline --columnsHaveTypes --type='csv' answers.csv",
+    "loadQuestions": "mongoimport -d sdc-questions -c questions --headerline --columnsHaveTypes --type='csv' questions.csv",
+    "loadPhotos": "mongoimport -d sdc-questions -c photos --headerline --columnsHaveTypes --type='csv' answers_photos.csv",
+    "loadcsv": "loadAnswers && loadQuestions && loadPhotos & wait"
   },
   "repository": {
     "type": "git",

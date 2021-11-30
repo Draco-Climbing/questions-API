@@ -2,13 +2,27 @@ const express = require('express');
 // const { Questions, Answers, Photos, db, resultdata } = require('../database/');
 // const { answersWithPhotos, questionsWithAnswers, resultDataAgg } = require('./aggregates')
 const controller = require('./controllers');
+const Auth = require('./authentication/config')
 
 let app = express();
 
 app.use(express.json())
-app.listen(8000, function () {
-  console.log('server running on port 8000');
+app.listen(3000, function () {
+  console.log('server running on port 3000');
 })
+
+app.use(express.static('public'));
+
+// function authChecker(req, res, next) {
+//   // console.log(req, req.headers.authorization, Auth.API_KEY)
+//     if (req.headers.authorization === Auth.API_KEY) {
+//         next();
+//     } else {
+//        res.send("401 NOT AUTHORIZED", 401);
+//     }
+// }
+
+// app.use(authChecker)
 
 app.get('/qa/questions/', controller.getControllers.getQuestions)
 app.get('/qa/z/', controller.getControllers.getQuestionsZ)
