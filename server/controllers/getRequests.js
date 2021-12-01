@@ -17,8 +17,8 @@ const convertAnswerArrayToObject = (results) => {
 
 module.exports = {
   getQuestions: function(req, res){
-    db
-      .collection('resultData')
+    // db
+    mongoose.connection.collection('resultData')
       .aggregate(resultDataAgg(
         parseInt(req.query.product_id),
         req.query.page ? parseInt(req.query.page) : 1,
@@ -67,9 +67,8 @@ module.exports = {
   
   getAnswers: async function(req, res){
   // console.log('incomming answer request', req.params, req.query)
-  // await mongoose.connect('mongodb://127.0.0.2:27017/sdc-questions')
-    
-  mongoose.connection.collection('answers').aggregate(answersWithPhotos(
+  
+    mongoose.connection.collection('answers').aggregate(answersWithPhotos(
     parseInt(req.params.question_id),
     req.query.page ? parseInt(req.query.page) : 1,
     req.query.count ? parseInt(req.query.count): 5))

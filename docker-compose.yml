@@ -1,3 +1,4 @@
+version: '3.9'
 services:
   node:
     image: sdc-node
@@ -10,7 +11,7 @@ services:
       context: .
       dockerfile: node.Dockerfile
   mongo:
-    image: sdc-mongo
+    image: mongo
     container_name: sdc-mongo
     ports: 
       - 3001:27017
@@ -19,3 +20,9 @@ services:
     build: 
       context: .
       dockerfile: mongo.Dockerfile
+    volumes:
+        - sdc-questions:/data/db
+          # /docker-entrypoint-initdb.d
+    # restart: unless-stopped
+volumes:
+  sdc-questions:
