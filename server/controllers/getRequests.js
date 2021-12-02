@@ -39,7 +39,7 @@ module.exports = {
   getQuestionsZ: async function(req, res){
   console.log('incomming question request', req.query)
   // test get request
-    const question = db.collection('questions')
+    const question = await db.collection('questions')
       .aggregate(questionsWithAnswers(
         parseInt(req.query.product_id),
         req.query.page ? parseInt(req.query.page) : 1,

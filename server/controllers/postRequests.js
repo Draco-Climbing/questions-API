@@ -32,7 +32,7 @@ const postPhotos = (answer_id, photos, questionId, answer) => {
     })
 
     // insert the new answer and photos into the resultData collection
-    db.collection('resultData').updateOne({ "_id": questionId }, { $push: { "answers":  answerObj }})
+    //db.collection('resultData').updateOne({ "_id": questionId }, { $push: { "answers":  answerObj }})
   })
 }
 
@@ -63,7 +63,7 @@ module.exports = {
     })
 
     //insert the new question into the resultData db
-    db.collection('resultData').insertOne(info)
+    //db.collection('resultData').insertOne(info)
 
     //send response to the client
     res.send(`${item._id}`)
