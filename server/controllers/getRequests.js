@@ -50,6 +50,7 @@ module.exports = {
         // reject(console.log('error getting photos'))
         throw err
       } else {
+        console.log('get Question', results);
         // for (var doc of results) {
         //   doc.question_date = Date(doc.question_date)
         //   for (var photo of doc.answers) {
@@ -79,7 +80,7 @@ module.exports = {
       console.log('error getting photos', err)
       res.status(500).send(`error on request:\n\n ${err}`)
     } else {
-      console.log('success')
+      console.log('success', results)
       const finalResult = {
         "question": req.params.question_id,
         "page": req.query.page,
