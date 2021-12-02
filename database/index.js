@@ -4,16 +4,16 @@ const { answersWithPhotos, questionsWithAnswers } = require('../server/controlle
 
 //Connect to Mongo database
 //connect to mongo on localhost
-const db = mongoose.createConnection()
-const connectToDB = async function () {
-  await db.openUri('mongodb://18.118.134.237:27017/sdc-questions')
-}
-connectToDB()
-// mongoose.connect('mongodb://sdc-mongo:27017/sdc-questions', { family: 4 })
+// const db = mongoose.createConnection()
+// const connectToDB = async function () {
+//   await db.openUri('mongodb://18.118.134.237:27017/sdc-questions')
+// }
+// connectToDB()
+mongoose.connect('mongodb://sdc-mongo:27017/sdc-questions', { family: 4 })
 // { useNewUrlParser: true, useUnifiedTopology: true }
 //connect to mongo on heroku (not set up, need to set up for aws)
 // mongoose.connect(process.env.MONGODB_URI);
-// var db = mongoose.connection
+var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
   console.log('MongoDB connection successful');
