@@ -68,7 +68,7 @@ module.exports = {
   
   getAnswers: async function(req, res){
   // console.log('incomming answer request', req.params, req.query)
-  
+  //db
     mongoose.connection.collection('answers').aggregate(answersWithPhotos(
     parseInt(req.params.question_id),
     req.query.page ? parseInt(req.query.page) : 1,
