@@ -36,8 +36,9 @@ module.exports = {
       })
   },
 
-  getQuestionsZ: function(req, res){
+  getQuestionsZ: async function(req, res){
   // console.log('incomming question request', req.query)
+  // test get request
   db
     .collection('questions')
     .aggregate(questionsWithAnswers(
