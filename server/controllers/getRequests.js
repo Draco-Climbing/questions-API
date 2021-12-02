@@ -16,7 +16,7 @@ const convertAnswerArrayToObject = (results) => {
 }
 
 module.exports = {
-  getQuestions: function(req, res){
+  getQuestionsZ: function(req, res){
     // db
     mongoose.connection.collection('resultData')
       .aggregate(resultDataAgg(
@@ -36,7 +36,7 @@ module.exports = {
       })
   },
 
-  getQuestionsZ: async function(req, res){
+  getQuestions: async function(req, res){
   console.log('incomming question request', req.query)
   // test get request
     const question = await db.collection('questions')
