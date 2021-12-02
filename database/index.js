@@ -4,6 +4,9 @@ const { answersWithPhotos, questionsWithAnswers } = require('../server/controlle
 
 //Connect to Mongo database
 //connect to mongo on localhost
+const Conn = mongoose.createConnection()
+await Conn.openUri('mongodb://sdc-mongo:27017/sdc-questions')
+
 mongoose.connect('mongodb://sdc-mongo:27017/sdc-questions', { family: 4 })
 // { useNewUrlParser: true, useUnifiedTopology: true }
 //connect to mongo on heroku (not set up, need to set up for aws)
@@ -90,3 +93,4 @@ module.exports.Answers = answers
 module.exports.Questions = questions
 module.exports.questionsAgg = questionsAgg
 module.exports.db = db
+module.exports.Conn = Conn

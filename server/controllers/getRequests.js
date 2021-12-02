@@ -37,15 +37,15 @@ module.exports = {
   },
 
   getQuestionsZ: async function(req, res){
-  // console.log('incomming question request', req.query)
+  console.log('incomming question request', req.query)
   // test get request
-  db
-    .collection('questions')
-    .aggregate(questionsWithAnswers(
-      parseInt(req.query.product_id),
-      req.query.page ? parseInt(req.query.page) : 1,
-      req.query.count ? parseInt(req.query.count): 5))
-    .toArray((err, results) => {
+    const question = Conn.collection('questions')
+      .aggregate(questionsWithAnswers(
+        parseInt(req.query.product_id),
+        req.query.page ? parseInt(req.query.page) : 1,
+        req.query.count ? parseInt(req.query.count) : 5));
+    
+    await question.toArray((err, results) => {
       if (err) {
         // reject(console.log('error getting photos'))
         throw err
