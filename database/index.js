@@ -6,7 +6,7 @@ const { answersWithPhotos, questionsWithAnswers } = require('../server/controlle
 //connect to mongo on localhost
 const db = mongoose.createConnection()
 const connectToDB = async function () {
-  await db.openUri('mongodb://sdc-mongo:27017/sdc-questions')
+  await db.openUri('mongodb://:27017/sdc-questions')
 }
 connectToDB()
 // mongoose.connect('mongodb://sdc-mongo:27017/sdc-questions', { family: 4 })
